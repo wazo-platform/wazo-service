@@ -1,0 +1,7 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/ 
+Upstream-Name: xivo-service
+Source: https://github.com/xivo-pbx/xivo-service
+
+Files: *
+Copyright: 2015 Avencall
+License: GPL-3.0+

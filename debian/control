@@ -1,0 +1,16 @@
+Source: xivo-service
+Section: admin
+Priority: extra
+Maintainer: XiVO Dev Team <dev@avencall.com>
+Uploaders: XiVO Builder Team <release@xivo.io>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.4
+Homepage: http://xivo.io/
+
+Package: xivo-service
+Architecture: all
+Depends: ${misc:Depends}
+Description: XiVO service
+ XIVO is a system based on a powerful IPBX, to bring an easy to
+ install solution for telephony and related services.
+ .

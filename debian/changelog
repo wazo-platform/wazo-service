@@ -1,0 +1,5 @@
+xivo-service (15.20~20151229110750) xivo-dev; urgency=medium
+
+  * Initial release.
+
+ -- Francois Blackburn <fblackburn@avencall.com>  Tue, 29 Dec 2015 11:07:50 -0500
