@@ -86,7 +86,12 @@ xivo_status() {
 xivo_enable() {
     echo "Enabling XiVO services..."
     rm -f $xivo_disabled_file
-    echo startup=yes > $XIVO_DEFAULT_FILE
+    grep -qs 'startup=' $XIVO_DEFAULT_FILE
+    if [ $? -eq 0 ]; then
+        sed -i 's/startup=no/startup=yes/' $XIVO_DEFAULT_FILE
+    else
+        echo startup=yes >> $XIVO_DEFAULT_FILE
+    fi
     enable_asterisk
     enable_monit
 }
@@ -94,7 +99,12 @@ xivo_enable() {
 xivo_disable() {
     echo "Disabling XiVO services..."
     touch $xivo_disabled_file
-    echo startup=no > $XIVO_DEFAULT_FILE
+    grep -qs 'startup=' $XIVO_DEFAULT_FILE
+    if [ $? -eq 0 ]; then
+        sed -i 's/startup=yes/startup=no/' $XIVO_DEFAULT_FILE
+    else
+        echo startup=no >> $XIVO_DEFAULT_FILE
+    fi
     disable_asterisk
     disable_monit
 }
