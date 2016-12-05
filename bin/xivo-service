@@ -44,15 +44,15 @@ usage() {
     cat <<-EOF
 	usage : $0 action [services_filter]
 	availables actions :
-	    status     : print status of all xivo services
-	    restart    : restart all xivo services
-	    stop       : stop all xivo services
-	    start      : start all xivo services
-	    enable     : enable all xivo services
-	    disable    : disable all xivo services
+	    status     : print status of all wazo services
+	    restart    : restart all wazo services
+	    stop       : stop all wazo services
+	    start      : start all wazo services
+	    enable     : enable all wazo services
+	    disable    : disable all wazo services
 
 	availables services_filter :
-	    xivo       : manage services only used on an active XiVO
+	    xivo       : manage services only used on an active Wazo
 	    default    : xivo + messaging and configuration
 	    all        : default + web and database servers
 
@@ -84,7 +84,7 @@ xivo_status() {
 }
 
 xivo_enable() {
-    echo "Enabling XiVO services..."
+    echo "Enabling Wazo services..."
     rm -f $xivo_disabled_file
     grep -qs 'startup=' $XIVO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
@@ -97,7 +97,7 @@ xivo_enable() {
 }
 
 xivo_disable() {
-    echo "Disabling XiVO services..."
+    echo "Disabling Wazo services..."
     touch $xivo_disabled_file
     grep -qs 'startup=' $XIVO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
@@ -294,7 +294,7 @@ xivo_close_and_stop() {
 
 xivo_start() {
     xivo_start_and_open "$services"
-    echo "XiVO fully booted"
+    echo "Wazo fully booted"
 }
 
 xivo_stop() {
