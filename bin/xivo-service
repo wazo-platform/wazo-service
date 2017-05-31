@@ -207,22 +207,27 @@ is_enabled() {
 is_running() {
     local service=$1
     local running=0
-    if [ "$service" = "postgresql" ] ; then
-        if [ $is_systemd -eq 0 ]; then
+    if [ $is_systemd -eq 0 ]; then
+        if [ "$service" = "postgresql" ] ; then
             pg_state=$(pg_lsclusters | tail -n 1 | awk '{print $4}')
             if [ "$pg_state" != "online" ] ; then
                 running=3
             fi
         else
-            systemctl status postgresql@9.4-main.service > /dev/null
-            running=$?
+            if [ -f /etc/init.d/$service ]; then
+                service $service status > /dev/null
+                running=$?
+            else
+                running=4
+            fi
         fi
     else
-        if [ -f /etc/init.d/$service ]; then
-            service $service status > /dev/null
+        if [ "$service" = "postgresql" ] ; then
+            systemctl status postgresql@9.4-main.service > /dev/null
             running=$?
         else
-            running=4
+            systemctl status $service > /dev/null
+            running=$?
         fi
     fi
     echo $running
