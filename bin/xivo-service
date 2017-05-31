@@ -75,6 +75,8 @@ xivo_status() {
             if [ $global_status -eq 0 ]; then
                 global_status=1
             fi
+        elif [ $status -eq 4 ]; then
+            echo -e "\tunknown\t\t$service"
         else
             echo -e "\tfailed\t\t$service"
             global_status=2
@@ -216,8 +218,12 @@ is_running() {
             running=$?
         fi
     else
-        service $service status > /dev/null
-        running=$?
+        if [ -f /etc/init.d/$service ]; then
+            service $service status > /dev/null
+            running=$?
+        else
+            running=4
+        fi
     fi
     echo $running
 }
