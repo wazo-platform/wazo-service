@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/ 
-Upstream-Name: xivo-service
-Source: https://github.com/xivo-pbx/xivo-service
+Upstream-Name: wazo-service
+Source: https://github.com/wazo-pbx/wazo-service
 
 Files: *
-Copyright: 2015 Avencall
+Copyright: 2015-2017 The Wazo Authors
 License: GPL-3.0+
