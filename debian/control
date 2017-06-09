@@ -8,9 +8,9 @@ Standards-Version: 3.9.6
 Package: wazo-service
 Architecture: all
 Depends: ${misc:Depends}
-Conflicts: xivo-upgrade
-Replaces: xivo-upgrade
-Provides: xivo-upgrade
+Conflicts: xivo-service
+Replaces: xivo-service
+Provides: xivo-service
 Description: Wazo service
  Wazo is a system based on a powerful IPBX, to bring an easy to
  install solution for telephony and related services.
