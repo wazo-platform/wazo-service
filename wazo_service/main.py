@@ -4,8 +4,13 @@
 
 import argparse
 import dbus
+import sys
 
 # D-BUS doc: https://www.freedesktop.org/wiki/Software/systemd/dbus/
+
+ALL_RUNNING = 0
+SOME_STOPPED = 1
+SOME_FAILED = 2
 
 
 class Service:
@@ -33,9 +38,19 @@ class Service:
 
 
 def status(service_group):
+    names = [service.name for service in service_group]
+    statuses = [service.status() for service in service_group]
+
     print('Checking services...')
-    for service in service_group:
-        print('\t{status}\t\t{name}'.format(status=service.status(), name=service.name))
+    for name, status in zip(names, statuses):
+        print('\t{status}\t\t{name}'.format(status=status, name=name))
+
+    if 'stopped' in statuses:
+        return SOME_STOPPED
+    if 'failed' in statuses:
+        return SOME_FAILED
+
+    return ALL_RUNNING
 
 
 def main():
@@ -45,7 +60,9 @@ def main():
     args = parser.parse_args()
 
     service_group = SERVICE_GROUPS[args.service_group_name]
-    ACTIONS[args.action](service_group)
+    status_code = ACTIONS[args.action](service_group)
+
+    sys.exit(status_code)
 
 
 ACTIONS = {'status': status}
