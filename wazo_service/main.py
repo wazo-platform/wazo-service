@@ -34,7 +34,7 @@ class Service:
 
         unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
-        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
+        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
         return self.translate_status(status)
 
     def status_without_systemd(self):
@@ -49,10 +49,11 @@ class Service:
 
     @staticmethod
     def translate_status(status):
-        if status in ('running', 'failed'):
-            return status
-        else:
-            return 'stopped'
+        if status == 'active':
+            return 'running'
+        if status == 'failed':
+            return 'failed'
+        return 'stopped'
 
 
 class PostgresService(Service):
@@ -70,7 +71,7 @@ class PostgresService(Service):
         unit_path = manager.GetUnit('postgresql@9.4-main.service')
         unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
-        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
+        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
         return self.translate_status(status)
 
     def status_without_systemd(self):
