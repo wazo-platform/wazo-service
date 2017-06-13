@@ -31,10 +31,8 @@ class Service:
 
     @staticmethod
     def translate_status(status):
-        if status == 'running':
-            return 'running'
-        elif status == 'failed':
-            return 'failed'
+        if status in ('running', 'failed'):
+            return status
         else:
             return 'stopped'
 
