@@ -7,6 +7,7 @@ import dbus
 import os
 import subprocess
 import sys
+import traceback
 
 import xivo_db.bin.check_db
 
@@ -83,7 +84,10 @@ class PostgresService(Service):
 
 
 def status(service_group):
-    xivo_db.bin.check_db.main()
+    try:
+        xivo_db.bin.check_db.main()
+    except Exception:
+        traceback.print_exc()
 
     names = [service.name for service in service_group]
     statuses = [service.status() for service in service_group]
