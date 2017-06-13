@@ -55,6 +55,32 @@ class Service:
             return 'stopped'
 
 
+class PostgresService(Service):
+    def __init__(self):
+        self.name = 'postgresql'
+
+    def status(self):
+        try:
+            sysbus = dbus.SystemBus()
+            systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+            manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+        except dbus.DBusException:
+            return self.status_without_systemd()
+
+        unit_path = manager.GetUnit('postgresql@9.4-main.service')
+        unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
+        unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
+        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
+        return self.translate_status(status)
+
+    def status_without_systemd(self):
+        return_code = subprocess.call(['wazo-pg-is-running'])
+
+        if return_code == 0:
+            return 'running'
+        return 'stopped'
+
+
 def status(service_group):
     xivo_db.bin.check_db.main()
 

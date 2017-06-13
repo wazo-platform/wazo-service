@@ -7,7 +7,7 @@ Standards-Version: 3.9.6
 
 Package: wazo-service
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, xivo-dbms (> 17.08)
 Conflicts: xivo-service
 Replaces: xivo-service
 Provides: xivo-service
