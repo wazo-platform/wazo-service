@@ -112,19 +112,34 @@ def main():
 
 
 ACTIONS = {'status': status}
-SERVICE_GROUPS = {'default': [Service('xivo-call-logs'),
-                              Service('xivo-dxtora'),
-                              Service('xivo-provd'),
-                              Service('xivo-agid'),
-                              Service('asterisk'),
-                              Service('xivo-amid'),
-                              Service('xivo-call-logs'),
-                              Service('xivo-agentd'),
-                              Service('xivo-ctid'),
-                              Service('xivo-dird'),
-                              Service('xivo-dird-phoned'),
-                              Service('xivo-ctid-ng'),
-                              Service('xivo-websocketd')]}
+SERVICE_GROUPS = {}
+SERVICE_GROUPS['default'] = [
+    Service('xivo-call-logs'),
+    Service('xivo-dxtora'),
+    Service('xivo-provd'),
+    Service('xivo-agid'),
+    Service('asterisk'),
+    Service('xivo-amid'),
+    Service('xivo-call-logs'),
+    Service('xivo-agentd'),
+    Service('xivo-ctid'),
+    Service('xivo-dird'),
+    Service('xivo-dird-phoned'),
+    Service('xivo-ctid-ng'),
+    Service('xivo-websocketd')
+]
+SERVICE_GROUPS['all'] = [
+    Service('rabbitmq-server'),
+    Service('consul'),
+    PostgresService(),
+    Service('nginx'),
+    Service('dahdi'),
+    Service('wazo-plugind'),
+    Service('xivo-sysconfd'),
+    Service('xivo-confgend'),
+    Service('xivo-confd'),
+    Service('xivo-auth')
+] + SERVICE_GROUPS['default']
 
 
 if __name__ == '__main__':
