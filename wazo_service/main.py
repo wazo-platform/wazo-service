@@ -19,6 +19,8 @@ SOME_FAILED = 2
 class Service:
     def __init__(self, name):
         self.name = name
+        self.service_name = name
+        self.unit_name = name
 
     def status(self):
         try:
@@ -29,7 +31,7 @@ class Service:
             return self.status_without_systemd()
 
         try:
-            unit_path = manager.GetUnit('{}.service'.format(self.name))
+            unit_path = manager.GetUnit('{}.service'.format(self.unit_name))
         except dbus.DBusException:
             return 'unknown'
 
@@ -40,7 +42,7 @@ class Service:
 
     def status_without_systemd(self):
         with open(os.devnull, 'w') as devnull:
-            return_code = subprocess.call(['service', self.name, 'status'], stdout=devnull)
+            return_code = subprocess.call(['service', self.service_name, 'status'], stdout=devnull)
 
         if return_code == 0:
             return 'running'
@@ -58,22 +60,11 @@ class Service:
 
 
 class PostgresService(Service):
+
     def __init__(self):
         self.name = 'postgresql'
-
-    def status(self):
-        try:
-            sysbus = dbus.SystemBus()
-            systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
-            manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-        except dbus.DBusException:
-            return self.status_without_systemd()
-
-        unit_path = manager.GetUnit('postgresql@9.4-main.service')
-        unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
-        unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
-        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
-        return self.translate_status(status)
+        self.unit_name = 'postgresql@9.4-main'
+        self.service_name = 'postgresql'
 
     def status_without_systemd(self):
         return_code = subprocess.call(['wazo-pg-is-running'])
