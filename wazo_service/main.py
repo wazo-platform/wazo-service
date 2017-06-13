@@ -19,7 +19,17 @@ class Service:
         unit_path = manager.GetUnit('{}.service'.format(self.name))
         unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
-        return unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
+        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
+        return self.translate_status(status)
+
+    @staticmethod
+    def translate_status(status):
+        if status == 'running':
+            return 'running'
+        elif status == 'failed':
+            return 'failed'
+        else:
+            return 'stopped'
 
 
 def status(service_group):
