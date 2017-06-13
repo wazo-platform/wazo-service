@@ -19,7 +19,11 @@ class Service:
         sysbus = dbus.SystemBus()
         systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
         manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-        unit_path = manager.GetUnit('{}.service'.format(self.name))
+        try:
+            unit_path = manager.GetUnit('{}.service'.format(self.name))
+        except dbus.DBusException:
+            return 'unknown'
+
         unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
         status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
