@@ -4,6 +4,8 @@
 
 import argparse
 import dbus
+import os
+import subprocess
 import sys
 
 import xivo_db.bin.check_db
@@ -18,9 +20,13 @@ class Service:
         self.name = name
 
     def status(self):
-        sysbus = dbus.SystemBus()
-        systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
-        manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+        try:
+            sysbus = dbus.SystemBus()
+            systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+            manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+        except dbus.DBusException:
+            return self.status_without_systemd()
+
         try:
             unit_path = manager.GetUnit('{}.service'.format(self.name))
         except dbus.DBusException:
@@ -30,6 +36,16 @@ class Service:
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
         status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'SubState')
         return self.translate_status(status)
+
+    def status_without_systemd(self):
+        with open(os.devnull, 'w') as devnull:
+            return_code = subprocess.call(['service', self.name, 'status'], stdout=devnull)
+
+        if return_code == 0:
+            return 'running'
+        if return_code == 3:
+            return 'stopped'
+        return 'unknown'
 
     @staticmethod
     def translate_status(status):
