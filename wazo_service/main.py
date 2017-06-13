@@ -56,7 +56,7 @@ def status(service_group):
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('action', help='Available actions: status')
-    parser.add_argument('service_group_name', default='xivo', nargs='?', help='Available groups: xivo')
+    parser.add_argument('service_group_name', default='default', nargs='?', help='Available groups: xivo')
     args = parser.parse_args()
 
     service_group = SERVICE_GROUPS[args.service_group_name]
@@ -66,7 +66,19 @@ def main():
 
 
 ACTIONS = {'status': status}
-SERVICE_GROUPS = {'xivo': [Service('xivo-call-logs')]}
+SERVICE_GROUPS = {'default': [Service('xivo-call-logs'),
+                              Service('xivo-dxtora'),
+                              Service('xivo-provd'),
+                              Service('xivo-agid'),
+                              Service('asterisk'),
+                              Service('xivo-amid'),
+                              Service('xivo-call-logs'),
+                              Service('xivo-agentd'),
+                              Service('xivo-ctid'),
+                              Service('xivo-dird'),
+                              Service('xivo-dird-phoned'),
+                              Service('xivo-ctid-ng'),
+                              Service('xivo-websocketd')]}
 
 
 if __name__ == '__main__':
