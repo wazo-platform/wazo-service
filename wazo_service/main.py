@@ -6,6 +6,8 @@ import argparse
 import dbus
 import sys
 
+import xivo_db.bin.check_db
+
 ALL_RUNNING = 0
 SOME_STOPPED = 1
 SOME_FAILED = 2
@@ -38,6 +40,8 @@ class Service:
 
 
 def status(service_group):
+    xivo_db.bin.check_db.main()
+
     names = [service.name for service in service_group]
     statuses = [service.status() for service in service_group]
 
