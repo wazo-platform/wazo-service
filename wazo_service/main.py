@@ -6,8 +6,6 @@ import argparse
 import dbus
 import sys
 
-# D-BUS doc: https://www.freedesktop.org/wiki/Software/systemd/dbus/
-
 ALL_RUNNING = 0
 SOME_STOPPED = 1
 SOME_FAILED = 2
