@@ -5,7 +5,7 @@ action=$1
 services_filter=${2:-default}
 include_monit=1
 xivo_services="xivo-dxtora xivo-provd xivo-agid asterisk xivo-amid xivo-call-logs xivo-agentd xivo-ctid xivo-dird xivo-dird-phoned xivo-ctid-ng xivo-websocketd"
-default_services="dahdi wazo-plugind xivo-sysconfd xivo-confgend xivo-confd xivo-auth $xivo_services"
+default_services="dahdi wazo-admin-ui wazo-plugind xivo-sysconfd xivo-confgend xivo-confd xivo-auth $xivo_services"
 all_services="rabbitmq-server consul postgresql nginx $default_services"
 monit_default="/etc/default/monit"
 asterisk_default="/etc/default/asterisk"
@@ -214,12 +214,22 @@ is_running() {
     echo $running
 }
 
+is_optional() {
+    local service=$1
+    if [ "$service" = "wazo-admin-ui" ] ; then
+        echo 0
+    else
+        echo 1
+    fi
+}
+
 start_services() {
     local services=$1
     for service in $services; do
         if [ $service = postgresql -a $is_systemd -eq 1 ]; then
             service=postgresql@9.4-main
         fi
+        optional=$(is_optional $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
         if [ $enabled -eq 0 ] && [ $running -ne 0 ] ; then
@@ -235,12 +245,20 @@ start_services() {
                 fi
             else
                 echo -en "\tstarting $service ..."
-                if ! systemctl start $service; then
-                    echo " NOK"
-                    open_sip_port
-                    exit 1
+                if [ $optional -eq 0 ]; then
+                    if systemctl start $service 2> /dev/null; then
+                        echo " OK"
+                    else
+                        echo " ignored"
+                    fi
+                else
+                    if ! systemctl start $service; then
+                        echo " NOK"
+                        open_sip_port
+                        exit 1
+                    fi
+                    echo " OK"
                 fi
-                echo " OK"
             fi
         elif [ $enabled -ne 0 ]; then
             echo -e "\t$service is disabled"
@@ -265,7 +283,12 @@ stop_services() {
                 fi
             fi
         else
-            systemctl stop $service
+            optional=$(is_optional $service)
+            if [ $optional -eq 0 ]; then
+                systemctl stop $service 2> /dev/null
+            else
+                systemctl stop $service
+            fi
         fi
     done
 }
