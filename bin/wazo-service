@@ -298,6 +298,10 @@ xivo_restart() {
     xivo_start
 }
 
+if [ "$(basename "$0")" == 'xivo-service' ]; then
+    echo 'Warning: xivo-service is a deprecated alias to wazo-service: use wazo-service instead' >&2
+fi
+
 case $action in
     status|monitor)  xivo_status;;
     force-reload|restart) xivo_restart;;
