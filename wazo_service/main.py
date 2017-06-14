@@ -16,7 +16,7 @@ SOME_STOPPED = 1
 SOME_FAILED = 2
 
 
-class Service:
+class Service(object):
     def __init__(self, name):
         self.name = name
         self.service_name = name
@@ -109,8 +109,7 @@ def main():
 
 ACTIONS = {'status': status}
 SERVICE_GROUPS = {}
-SERVICE_GROUPS['default'] = [
-    Service('xivo-call-logs'),
+SERVICE_GROUPS['xivo'] = [
     Service('xivo-dxtora'),
     Service('xivo-provd'),
     Service('xivo-agid'),
@@ -124,17 +123,19 @@ SERVICE_GROUPS['default'] = [
     Service('xivo-ctid-ng'),
     Service('xivo-websocketd')
 ]
-SERVICE_GROUPS['all'] = [
-    Service('rabbitmq-server'),
-    Service('consul'),
-    PostgresService(),
-    Service('nginx'),
+SERVICE_GROUPS['default'] = [
     Service('dahdi'),
     Service('wazo-plugind'),
     Service('xivo-sysconfd'),
     Service('xivo-confgend'),
     Service('xivo-confd'),
     Service('xivo-auth')
+] + SERVICE_GROUPS['xivo']
+SERVICE_GROUPS['all'] = [
+    Service('rabbitmq-server'),
+    Service('consul'),
+    PostgresService(),
+    Service('nginx'),
 ] + SERVICE_GROUPS['default']
 
 
