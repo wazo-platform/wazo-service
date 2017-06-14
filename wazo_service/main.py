@@ -98,7 +98,8 @@ def status(service_group):
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('action', help='Available actions: status')
-    parser.add_argument('service_group_name', default='default', nargs='?', help='Available groups: xivo')
+    parser.add_argument('service_group_name', default='default', nargs='?',
+                        help='Available groups: all, default, xivo')
     args = parser.parse_args()
 
     service_group = SERVICE_GROUPS[args.service_group_name]
