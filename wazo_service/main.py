@@ -128,6 +128,7 @@ SERVICE_GROUPS['default'] = [
     Service('dahdi'),
     Service('wazo-admin-ui'),
     Service('wazo-plugind'),
+    Service('wazo-webhookd'),
     Service('xivo-sysconfd'),
     Service('xivo-confgend'),
     Service('xivo-confd'),
