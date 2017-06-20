@@ -7,7 +7,12 @@ Standards-Version: 3.9.6
 
 Package: wazo-service
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, python-dbus, xivo-dbms (> 17.08), xivo-manage-db
+Depends: ${python:Depends},
+         ${misc:Depends},
+         dbus,
+         python-dbus,
+         xivo-dbms (> 17.08),
+         xivo-manage-db
 Conflicts: xivo-service
 Replaces: xivo-service
 Provides: xivo-service
