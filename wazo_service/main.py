@@ -1,6 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # Copyright 2017 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0+
+
+from __future__ import print_function
 
 import argparse
 import dbus
