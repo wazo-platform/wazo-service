@@ -113,12 +113,12 @@ def main():
 ACTIONS = {'status': status}
 SERVICE_GROUPS = {}
 SERVICE_GROUPS['xivo'] = [
+    Service('wazo-call-logd'),
     Service('xivo-dxtora'),
     Service('xivo-provd'),
     Service('xivo-agid'),
     Service('asterisk'),
     Service('xivo-amid'),
-    Service('xivo-call-logs'),
     Service('xivo-agentd'),
     Service('xivo-ctid'),
     Service('xivo-dird'),
