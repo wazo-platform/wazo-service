@@ -141,6 +141,7 @@ SERVICE_GROUPS['all'] = [
     Service('consul'),
     PostgresService(),
     Service('nginx'),
+    Service('mongooseim'),
 ] + SERVICE_GROUPS['default']
 
 
