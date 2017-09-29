@@ -134,7 +134,7 @@ SERVICE_GROUPS['default'] = [
     Service('xivo-sysconfd'),
     Service('xivo-confgend'),
     Service('xivo-confd'),
-    Service('xivo-auth')
+    Service('wazo-auth')
 ] + SERVICE_GROUPS['xivo']
 SERVICE_GROUPS['all'] = [
     Service('rabbitmq-server'),
