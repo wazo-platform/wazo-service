@@ -11,7 +11,7 @@ Depends: ${python:Depends},
          ${misc:Depends},
          dbus,
          python-dbus,
-         xivo-dbms (>= 17.12~20170818.181555.3bff1f8),
+         xivo-dbms (>= 17.15~20171114.180840.c64079f),
          xivo-manage-db
 Conflicts: xivo-service
 Replaces: xivo-service
