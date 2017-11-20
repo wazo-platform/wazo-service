@@ -14,6 +14,28 @@ MAX_RETRY_SERVICE=30
 xivo_disabled_file="/var/lib/xivo/disabled"
 is_systemd=0
 
+usage() {
+    cat <<-EOF
+	usage : $0 action [services_filter]
+	availables actions :
+	    status     : print status of all wazo services
+	    restart    : restart all wazo services
+	    stop       : stop all wazo services
+	    start      : start all wazo services
+	    enable     : enable all wazo services
+	    disable    : disable all wazo services
+
+	availables services_filter :
+	    xivo       : manage services only used on an active Wazo
+	    default    : xivo + messaging and configuration
+	    all        : default + web and database servers
+
+	impacted services ($services_filter) : $services
+	EOF
+
+    exit 0
+}
+
 if [ "$services_filter" = default ]; then
     services=$default_services
 elif [ "$services_filter" = all ]; then
@@ -39,28 +61,6 @@ reverse_list() {
 }
 
 reversed_services=$(reverse_list "$services")
-
-usage() {
-    cat <<-EOF
-	usage : $0 action [services_filter]
-	availables actions :
-	    status     : print status of all wazo services
-	    restart    : restart all wazo services
-	    stop       : stop all wazo services
-	    start      : start all wazo services
-	    enable     : enable all wazo services
-	    disable    : disable all wazo services
-
-	availables services_filter :
-	    xivo       : manage services only used on an active Wazo
-	    default    : xivo + messaging and configuration
-	    all        : default + web and database servers
-
-	impacted services ($services_filter) : $services
-	EOF
-
-    exit 0
-}
 
 xivo_status() {
     wazo-service-python status "$services_filter"
