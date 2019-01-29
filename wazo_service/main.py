@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2017-2018 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2017-2019 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import print_function
@@ -124,7 +124,8 @@ SERVICE_GROUPS['xivo'] = [
     Service('wazo-dird'),
     Service('xivo-dird-phoned'),
     Service('xivo-ctid-ng'),
-    Service('xivo-websocketd')
+    Service('xivo-websocketd'),
+    Service('wazo-chatd'),
 ]
 SERVICE_GROUPS['default'] = [
     Service('dahdi'),
