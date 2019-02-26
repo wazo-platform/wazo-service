@@ -8,4 +8,4 @@ export PYBUILD_NAME=wazo-service
 export PYBUILD_DISABLE=test
 
 %:
-	dh $@ --buildsystem=pybuild
+	dh $@ --with python3 --buildsystem=pybuild

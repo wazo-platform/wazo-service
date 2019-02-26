@@ -2,16 +2,16 @@ Source: wazo-service
 Section: admin
 Priority: extra
 Maintainer: Wazo Maintainers <dev@wazo.community>
-Build-Depends: debhelper (>= 9), dh-python, python-all, python-setuptools
+Build-Depends: debhelper (>= 9), dh-python, python3-all, python3-setuptools
 Standards-Version: 3.9.6
 
 Package: wazo-service
 Architecture: all
-Depends: ${python:Depends},
+Depends: ${python3:Depends},
          ${misc:Depends},
          dbus,
          monit,
-         python-dbus,
+         python3-dbus,
          xivo-dbms (>= 19.03~20190218.142812.1fd1d24.deb9),
          xivo-manage-db
 Conflicts: xivo-service
