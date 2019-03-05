@@ -1,8 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright 2017-2019 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from __future__ import print_function
 
 import argparse
 import dbus
@@ -18,7 +16,7 @@ SOME_STOPPED = 1
 SOME_FAILED = 2
 
 
-class Service(object):
+class Service:
     def __init__(self, name):
         self.name = name
         self.service_name = name
