@@ -118,7 +118,6 @@ SERVICE_GROUPS['xivo'] = [
     Service('asterisk'),
     Service('xivo-amid'),
     Service('xivo-agentd'),
-    Service('xivo-ctid'),
     Service('wazo-dird'),
     Service('xivo-dird-phoned'),
     Service('xivo-ctid-ng'),
