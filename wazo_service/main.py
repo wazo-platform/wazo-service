@@ -120,7 +120,7 @@ SERVICE_GROUPS['xivo'] = [
     Service('xivo-agentd'),
     Service('wazo-dird'),
     Service('xivo-dird-phoned'),
-    Service('xivo-ctid-ng'),
+    Service('wazo-calld'),
     Service('xivo-websocketd'),
     Service('wazo-chatd'),
 ]
