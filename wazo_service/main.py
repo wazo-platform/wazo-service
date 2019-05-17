@@ -121,7 +121,7 @@ SERVICE_GROUPS['xivo'] = [
     Service('wazo-dird'),
     Service('xivo-dird-phoned'),
     Service('wazo-calld'),
-    Service('xivo-websocketd'),
+    Service('wazo-websocketd'),
     Service('wazo-chatd'),
 ]
 SERVICE_GROUPS['default'] = [
