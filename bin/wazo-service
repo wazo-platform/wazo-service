@@ -28,8 +28,8 @@ usage() {
 	    disable    : disable all wazo services
 
 	availables services_filter :
-	    xivo       : manage services only used on an active Wazo
-	    default    : xivo + messaging and configuration
+	    wazo       : manage services only used on an active Wazo
+	    default    : wazo + messaging and configuration
 	    all        : default + web and database servers
 
 	impacted services ($services_filter) : $services
@@ -42,9 +42,16 @@ if [ "$services_filter" = default ]; then
     services=$default_services
 elif [ "$services_filter" = all ]; then
     services=$all_services
+elif [ "$services_filter" = wazo ]; then
+    services=$wazo_services
+elif [ "$services_filter" = "wazo-nomonit" ]; then
+    services=$wazo_services
+    include_monit=0
 elif [ "$services_filter" = xivo ]; then
+    echo 'Warning: xivo action is a deprecated alias to wazo: use wazo-service wazo' >&2
     services=$wazo_services
 elif [ "$services_filter" = "xivo-nomonit" ]; then
+    echo 'Warning: xivo-nomonit action is a deprecated alias to wazo-nomonit: use wazo-service wazo-nomonit' >&2
     services=$wazo_services
     include_monit=0
 else
