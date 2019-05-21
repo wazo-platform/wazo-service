@@ -6,14 +6,14 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 action=$1
 services_filter=${2:-default}
 include_monit=1
-xivo_services="xivo-dxtora xivo-provd xivo-agid asterisk xivo-amid wazo-call-logd xivo-agentd wazo-dird wazo-dird-phoned wazo-calld wazo-websocketd wazo-chatd"
-default_services="dahdi wazo-plugind wazo-webhookd xivo-sysconfd xivo-confgend xivo-confd wazo-auth $xivo_services"
+wazo_services="xivo-dxtora xivo-provd xivo-agid asterisk xivo-amid wazo-call-logd xivo-agentd wazo-dird wazo-dird-phoned wazo-calld wazo-websocketd wazo-chatd"
+default_services="dahdi wazo-plugind wazo-webhookd xivo-sysconfd xivo-confgend xivo-confd wazo-auth $wazo_services"
 all_services="rabbitmq-server consul postgresql nginx $default_services"
 monit_default="/etc/default/monit"
 asterisk_default="/etc/default/asterisk"
-XIVO_DEFAULT_FILE="/etc/default/xivo"
+WAZO_DEFAULT_FILE="/etc/default/xivo"
 MAX_RETRY_SERVICE=30
-xivo_disabled_file="/var/lib/xivo/disabled"
+wazo_disabled_file="/var/lib/xivo/disabled"
 is_systemd=0
 
 usage() {
@@ -43,9 +43,9 @@ if [ "$services_filter" = default ]; then
 elif [ "$services_filter" = all ]; then
     services=$all_services
 elif [ "$services_filter" = xivo ]; then
-    services=$xivo_services
+    services=$wazo_services
 elif [ "$services_filter" = "xivo-nomonit" ]; then
-    services=$xivo_services
+    services=$wazo_services
     include_monit=0
 else
     echo "Invalid service filter \"$services_filter\""
@@ -64,31 +64,31 @@ reverse_list() {
 
 reversed_services=$(reverse_list "$services")
 
-xivo_status() {
+wazo_status() {
     wazo-service-python status "$services_filter"
 }
 
-xivo_enable() {
+wazo_enable() {
     echo "Enabling Wazo services..."
-    rm -f $xivo_disabled_file
-    grep -qs 'startup=' $XIVO_DEFAULT_FILE
+    rm -f $wazo_disabled_file
+    grep -qs 'startup=' $WAZO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
-        sed -i 's/startup=no/startup=yes/' $XIVO_DEFAULT_FILE
+        sed -i 's/startup=no/startup=yes/' $WAZO_DEFAULT_FILE
     else
-        echo startup=yes >> $XIVO_DEFAULT_FILE
+        echo startup=yes >> $WAZO_DEFAULT_FILE
     fi
     enable_asterisk
     enable_monit
 }
 
-xivo_disable() {
+wazo_disable() {
     echo "Disabling Wazo services..."
-    touch $xivo_disabled_file
-    grep -qs 'startup=' $XIVO_DEFAULT_FILE
+    touch $wazo_disabled_file
+    grep -qs 'startup=' $WAZO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
-        sed -i 's/startup=yes/startup=no/' $XIVO_DEFAULT_FILE
+        sed -i 's/startup=yes/startup=no/' $WAZO_DEFAULT_FILE
     else
-        echo startup=no >> $XIVO_DEFAULT_FILE
+        echo startup=no >> $WAZO_DEFAULT_FILE
     fi
     disable_asterisk
     disable_monit
@@ -167,18 +167,18 @@ is_enabled() {
             grep -q 'RUNASTERISK=yes' $asterisk_default
             enabled=$?
         else
-            test ! -f $xivo_disabled_file
+            test ! -f $wazo_disabled_file
             enabled=$?
         fi
     fi
-    for srv in $xivo_services; do
+    for srv in $wazo_services; do
         if [ $srv != "asterisk" ]; then
             if [ $srv = $service ]; then
                 if [ $is_systemd -eq 0 ]; then
-                    grep -q 'startup=yes' $XIVO_DEFAULT_FILE
+                    grep -q 'startup=yes' $WAZO_DEFAULT_FILE
                     enabled=$?
                 else
-                    test ! -f $xivo_disabled_file
+                    test ! -f $wazo_disabled_file
                     enabled=$?
                 fi
             fi
@@ -295,32 +295,32 @@ stop_services() {
     done
 }
 
-xivo_start_and_open() {
+wazo_start_and_open() {
     local service_list=$1
     echo "Waiting for services to start successfully..."
     start_services "$service_list"
     open_sip_port
 }
 
-xivo_close_and_stop() {
+wazo_close_and_stop() {
     local service_list=$1
     close_sip_port
     echo "Waiting for services to stop successfully..."
     stop_services "$service_list"
 }
 
-xivo_start() {
-    xivo_start_and_open "$services"
+wazo_start() {
+    wazo_start_and_open "$services"
     echo "Wazo fully booted"
 }
 
-xivo_stop() {
-    xivo_close_and_stop "$reversed_services"
+wazo_stop() {
+    wazo_close_and_stop "$reversed_services"
 }
 
-xivo_restart() {
-    xivo_stop
-    xivo_start
+wazo_restart() {
+    wazo_stop
+    wazo_start
 }
 
 if [ "$(basename "$0")" == 'xivo-service' ]; then
@@ -328,11 +328,11 @@ if [ "$(basename "$0")" == 'xivo-service' ]; then
 fi
 
 case $action in
-    status|monitor)  xivo_status;;
-    force-reload|restart) xivo_restart;;
-    start)   xivo_start;;
-    stop)    xivo_stop;;
-    enable)  xivo_enable;;
-    disable) xivo_disable;;
+    status|monitor)  wazo_status;;
+    force-reload|restart) wazo_restart;;
+    start)   wazo_start;;
+    stop)    wazo_stop;;
+    enable)  wazo_enable;;
+    disable) wazo_disable;;
     *) usage;;
 esac
