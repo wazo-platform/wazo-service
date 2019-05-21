@@ -13,7 +13,9 @@ monit_default="/etc/default/monit"
 asterisk_default="/etc/default/asterisk"
 WAZO_DEFAULT_FILE="/etc/default/xivo"
 MAX_RETRY_SERVICE=30
-wazo_disabled_file="/var/lib/xivo/disabled"
+xivo_disabled_file="/var/lib/xivo/disabled"
+xivo_home="/var/lib/xivo"
+wazo_disabled_file="/var/lib/wazo/disabled"
 is_systemd=0
 
 usage() {
@@ -71,6 +73,9 @@ wazo_status() {
 wazo_enable() {
     echo "Enabling Wazo services..."
     rm -f $wazo_disabled_file
+    if [ -d $xivo_home ]; then
+        rm -f $xivo_disabled_file
+    fi
     grep -qs 'startup=' $WAZO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
         sed -i 's/startup=no/startup=yes/' $WAZO_DEFAULT_FILE
@@ -84,6 +89,9 @@ wazo_enable() {
 wazo_disable() {
     echo "Disabling Wazo services..."
     touch $wazo_disabled_file
+    if [ -d $xivo_home ]; then
+        touch $xivo_disabled_file
+    fi
     grep -qs 'startup=' $WAZO_DEFAULT_FILE
     if [ $? -eq 0 ]; then
         sed -i 's/startup=yes/startup=no/' $WAZO_DEFAULT_FILE
@@ -167,7 +175,7 @@ is_enabled() {
             grep -q 'RUNASTERISK=yes' $asterisk_default
             enabled=$?
         else
-            test ! -f $wazo_disabled_file
+            test ! -f $wazo_disabled_file -a ! -f $xivo_disabled_file
             enabled=$?
         fi
     fi
@@ -178,7 +186,7 @@ is_enabled() {
                     grep -q 'startup=yes' $WAZO_DEFAULT_FILE
                     enabled=$?
                 else
-                    test ! -f $wazo_disabled_file
+                    test ! -f $wazo_disabled_file -a ! -f $xivo_disabled_file
                     enabled=$?
                 fi
             fi
