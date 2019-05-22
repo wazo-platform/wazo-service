@@ -10,11 +10,9 @@ wazo_services="xivo-dxtora xivo-provd xivo-agid asterisk xivo-amid wazo-call-log
 default_services="dahdi wazo-plugind wazo-webhookd xivo-sysconfd xivo-confgend xivo-confd wazo-auth $wazo_services"
 all_services="rabbitmq-server consul postgresql nginx $default_services"
 monit_default="/etc/default/monit"
-asterisk_default="/etc/default/asterisk"
-WAZO_DEFAULT_FILE="/etc/default/xivo"
+wazo_disabled_file="/var/lib/wazo/disabled"
 xivo_disabled_file="/var/lib/xivo/disabled"
 xivo_home="/var/lib/xivo"
-wazo_disabled_file="/var/lib/wazo/disabled"
 
 usage() {
     cat <<-EOF
@@ -70,13 +68,6 @@ wazo_enable() {
     if [ -d $xivo_home ]; then
         rm -f $xivo_disabled_file
     fi
-    grep -qs 'startup=' $WAZO_DEFAULT_FILE
-    if [ $? -eq 0 ]; then
-        sed -i 's/startup=no/startup=yes/' $WAZO_DEFAULT_FILE
-    else
-        echo startup=yes >> $WAZO_DEFAULT_FILE
-    fi
-    enable_asterisk
     enable_monit
 }
 
@@ -86,26 +77,7 @@ wazo_disable() {
     if [ -d $xivo_home ]; then
         touch $xivo_disabled_file
     fi
-    grep -qs 'startup=' $WAZO_DEFAULT_FILE
-    if [ $? -eq 0 ]; then
-        sed -i 's/startup=yes/startup=no/' $WAZO_DEFAULT_FILE
-    else
-        echo startup=no >> $WAZO_DEFAULT_FILE
-    fi
-    disable_asterisk
     disable_monit
-}
-
-disable_asterisk() {
-    if [ -f $asterisk_default ]; then
-        sed -i 's/RUNASTERISK=yes/RUNASTERISK=no/' $asterisk_default
-    fi
-}
-
-enable_asterisk() {
-    if [ -f $asterisk_default ]; then
-        sed -i 's/RUNASTERISK=no/RUNASTERISK=yes/' $asterisk_default
-    fi
 }
 
 disable_monit() {
