@@ -130,7 +130,7 @@ SERVICE_GROUPS['default'] = [
     Service('wazo-webhookd'),
     Service('xivo-sysconfd'),
     Service('xivo-confgend'),
-    Service('xivo-confd'),
+    Service('wazo-confd'),
     Service('wazo-auth')
 ] + SERVICE_GROUPS['xivo']
 SERVICE_GROUPS['all'] = [
