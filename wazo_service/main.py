@@ -117,7 +117,7 @@ SERVICE_GROUPS['xivo'] = [
     Service('xivo-agid'),
     Service('asterisk'),
     Service('xivo-amid'),
-    Service('xivo-agentd'),
+    Service('wazo-agentd'),
     Service('wazo-dird'),
     Service('wazo-dird-phoned'),
     Service('wazo-calld'),
