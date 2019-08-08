@@ -113,7 +113,7 @@ SERVICE_GROUPS = {}
 SERVICE_GROUPS['xivo'] = [
     Service('wazo-call-logd'),
     Service('xivo-dxtora'),
-    Service('xivo-provd'),
+    Service('wazo-provd'),
     Service('wazo-agid'),
     Service('asterisk'),
     Service('xivo-amid'),
