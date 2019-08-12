@@ -1,2 +1,2 @@
-git+https://github.com/wazo-pbx/xivo-manage-db.git
+https://github.com/wazo-pbx/xivo-manage-db/archive/buster.zip
 dbus==1.2.8
