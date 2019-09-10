@@ -63,7 +63,7 @@ class PostgresService(Service):
 
     def __init__(self):
         self.name = 'postgresql'
-        self.unit_name = 'postgresql@9.6-main'
+        self.unit_name = 'postgresql@11-main'
         self.service_name = 'postgresql'
 
     def status_without_systemd(self):
