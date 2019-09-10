@@ -148,7 +148,7 @@ is_running() {
     local service=$1
     local running=0
     if [ "$service" = "postgresql" ] ; then
-        systemctl status postgresql@9.6-main.service > /dev/null
+        systemctl status postgresql@11-main.service > /dev/null
         running=$?
     else
         systemctl status $service > /dev/null
@@ -170,7 +170,7 @@ start_services() {
     local services=$1
     for service in $services; do
         if [ $service = postgresql ]; then
-            service=postgresql@9.6-main
+            service=postgresql@11-main
         fi
         optional=$(is_optional $service)
         enabled=$(is_enabled $service)
@@ -203,7 +203,7 @@ stop_services() {
     local services=$1
     for service in $services; do
         if [ $service = postgresql ]; then
-            service=postgresql@9.6-main
+            service=postgresql@11-main
         fi
 
         optional=$(is_optional $service)
