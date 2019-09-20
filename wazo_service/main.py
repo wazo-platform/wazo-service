@@ -4,8 +4,6 @@
 
 import argparse
 import dbus
-import os
-import subprocess
 import sys
 import traceback
 
@@ -23,12 +21,9 @@ class Service:
         self.unit_name = name
 
     def status(self):
-        try:
-            sysbus = dbus.SystemBus()
-            systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
-            manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-        except dbus.DBusException:
-            return self.status_without_systemd()
+        sysbus = dbus.SystemBus()
+        systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+        manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
         try:
             unit_path = manager.GetUnit('{}.service'.format(self.unit_name))
@@ -39,16 +34,6 @@ class Service:
         unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
         status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
         return self.translate_status(status)
-
-    def status_without_systemd(self):
-        with open(os.devnull, 'w') as devnull:
-            return_code = subprocess.call(['service', self.service_name, 'status'], stdout=devnull)
-
-        if return_code == 0:
-            return 'running'
-        if return_code == 3:
-            return 'stopped'
-        return 'unknown'
 
     @staticmethod
     def translate_status(status):
@@ -65,13 +50,6 @@ class PostgresService(Service):
         self.name = 'postgresql'
         self.unit_name = 'postgresql@11-main'
         self.service_name = 'postgresql'
-
-    def status_without_systemd(self):
-        return_code = subprocess.call(['wazo-pg-is-running'])
-
-        if return_code == 0:
-            return 'running'
-        return 'stopped'
 
 
 def status(service_group):
