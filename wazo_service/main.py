@@ -112,7 +112,7 @@ ACTIONS = {'status': status}
 SERVICE_GROUPS = {}
 SERVICE_GROUPS['xivo'] = [
     Service('wazo-call-logd'),
-    Service('xivo-dxtora'),
+    Service('wazo-dxtora'),
     Service('wazo-provd'),
     Service('wazo-agid'),
     Service('asterisk'),
