@@ -1,2 +1,2 @@
-https://github.com/wazo-pbx/xivo-manage-db/archive/master.zip
+https://github.com/wazo-platform/xivo-manage-db/archive/master.zip
 dbus==1.2.8
