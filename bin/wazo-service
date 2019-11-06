@@ -11,8 +11,6 @@ default_services="dahdi wazo-plugind wazo-webhookd xivo-sysconfd wazo-confgend w
 all_services="rabbitmq-server consul postgresql nginx $default_services"
 monit_default="/etc/default/monit"
 wazo_disabled_file="/var/lib/wazo/disabled"
-xivo_disabled_file="/var/lib/xivo/disabled"
-xivo_home="/var/lib/xivo"
 
 usage() {
     cat <<-EOF
@@ -72,18 +70,12 @@ wazo_status() {
 wazo_enable() {
     echo "Enabling Wazo services..."
     rm -f $wazo_disabled_file
-    if [ -d $xivo_home ]; then
-        rm -f $xivo_disabled_file
-    fi
     enable_monit
 }
 
 wazo_disable() {
     echo "Disabling Wazo services..."
     touch $wazo_disabled_file
-    if [ -d $xivo_home ]; then
-        touch $xivo_disabled_file
-    fi
     disable_monit
 }
 
@@ -130,13 +122,13 @@ is_enabled() {
     local service=$1
     enabled=0
     if [ $service = "asterisk" ]; then
-       test ! -f $wazo_disabled_file -a ! -f $xivo_disabled_file
+       test ! -f $wazo_disabled_file
        enabled=$?
     fi
     for srv in $wazo_services; do
         if [ $srv != "asterisk" ]; then
             if [ $srv = $service ]; then
-               test ! -f $wazo_disabled_file -a ! -f $xivo_disabled_file
+               test ! -f $wazo_disabled_file
                enabled=$?
             fi
         fi
