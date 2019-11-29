@@ -151,7 +151,7 @@ is_running() {
 
 is_optional() {
     local service=$1
-    if [ "$service" = "" ] ; then
+    if [ "$service" = "dahdi" ] ; then
         echo 0
     else
         echo 1
