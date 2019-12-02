@@ -205,7 +205,7 @@ stop_services() {
             systemctl stop $service
         fi
     done
-    exit 0
+    return 0
 }
 
 wazo_start_and_open() {
