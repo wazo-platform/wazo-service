@@ -17,7 +17,5 @@ Depends: ${python3:Depends},
 Conflicts: xivo-service
 Replaces: xivo-service
 Provides: xivo-service
-Description: Wazo service
- Wazo is a system based on a powerful IPBX, to bring an easy to
- install solution for telephony and related services.
- .
+Description: manage Wazo services
+ Command line utilities to manage Wazo services.
