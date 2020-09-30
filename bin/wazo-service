@@ -158,6 +158,12 @@ is_optional() {
     fi
 }
 
+exists() {
+    local service=$1
+    systemctl cat "$service" > /dev/null 2> /dev/null
+    echo $?
+}
+
 start_services() {
     local services=$1
     for service in $services; do
@@ -165,16 +171,13 @@ start_services() {
             service=postgresql@11-main
         fi
         optional=$(is_optional $service)
+        exists=$(exists $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
         if [ $enabled -eq 0 ] && [ $running -ne 0 ] ; then
             echo -en "\tstarting $service ..."
-            if [ $optional -eq 0 ]; then
-                if systemctl start $service 2> /dev/null; then
-                    echo " OK"
-                else
-                    echo " ignored"
-                fi
+            if [ $optional -eq 0 -a $exists -ne 0 ]; then
+                echo " ignored"
             else
                 if ! systemctl start $service; then
                     echo " NOK"
