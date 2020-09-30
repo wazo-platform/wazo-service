@@ -168,24 +168,40 @@ start_services() {
         exists=$(exists $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
-        if [ $enabled -eq 0 ] && [ $running -ne 0 ] ; then
-            echo -en "\tstarting $service ..."
-            if [ $optional -eq 0 -a $exists -ne 0 ]; then
-                echo " ignored"
-            else
-                if ! systemctl start $service; then
-                    echo " NOK"
-                    open_sip_port
-                    exit 1
-                fi
-                echo " OK"
-            fi
-        elif [ $enabled -ne 0 ]; then
-            echo -e "\t$service is disabled"
-        fi
+        print_start_service $optional $exists $enabled $running
     done
     start_monit
 }
+
+print_start_service() {
+    local optional=$1
+    local exists=$2
+    local enabled=$3
+    local running=$4
+
+    if [ $enabled -ne 0 ]; then
+        echo -e "\t$service is disabled"
+        return
+    fi
+    if [ $running -eq 0 ]; then
+        return
+    fi
+
+    echo -en "\tstarting $service ..."
+    if [ $optional -eq 0 -a $exists -ne 0 ]; then
+        echo " ignored"
+        return
+    fi
+
+    if ! systemctl start $service; then
+        echo " NOK"
+        open_sip_port
+        exit 1
+    fi
+
+    echo " OK"
+}
+
 
 stop_services() {
     stop_monit
