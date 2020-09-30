@@ -58,7 +58,7 @@ fi
 
 reverse_list() {
     local service_list=$1
-    /bin/echo $service_list | tac -s' '
+    /bin/echo "$service_list" | tac -s' '
 }
 
 reversed_services=$(reverse_list "$services")
@@ -121,13 +121,13 @@ open_sip_port() {
 is_enabled() {
     local service=$1
     enabled=0
-    if [ $service = "asterisk" ]; then
+    if [ "$service" = "asterisk" ]; then
        test ! -f $wazo_disabled_file
        enabled=$?
     fi
     for srv in $wazo_services; do
-        if [ $srv != "asterisk" ]; then
-            if [ $srv = $service ]; then
+        if [ "$srv" != "asterisk" ]; then
+            if [ "$srv" = "$service" ]; then
                test ! -f $wazo_disabled_file
                enabled=$?
             fi
@@ -138,7 +138,7 @@ is_enabled() {
 
 is_running() {
     local service=$1
-    systemctl is-active --quiet $service > /dev/null
+    systemctl is-active --quiet "$service" > /dev/null
     echo $?
 }
 
@@ -160,14 +160,14 @@ exists() {
 start_services() {
     local services=$1
     for service in $services; do
-        if [ $service = postgresql ]; then
+        if [ "$service" = postgresql ]; then
             service=postgresql@11-main
         fi
         optional=$(is_optional $service)
         exists=$(exists $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
-        print_start_service $optional $exists $enabled $running
+        print_start_service "$optional" "$exists" "$enabled" "$running"
     done
     start_monit
 }
@@ -178,21 +178,21 @@ print_start_service() {
     local enabled=$3
     local running=$4
 
-    if [ $enabled -ne 0 ]; then
+    if [ "$enabled" -ne 0 ]; then
         echo -e "\t$service is disabled"
         return
     fi
-    if [ $running -eq 0 ]; then
+    if [ "$running" -eq 0 ]; then
         return
     fi
 
     echo -en "\tstarting $service ..."
-    if [ $optional -eq 0 -a $exists -ne 0 ]; then
+    if [ "$optional" -eq 0 ] && [ "$exists" -ne 0 ]; then
         echo " ignored"
         return
     fi
 
-    if ! systemctl start $service; then
+    if ! systemctl start "$service"; then
         echo " NOK"
         open_sip_port
         exit 1
@@ -206,12 +206,12 @@ stop_services() {
     stop_monit
     local services=$1
     for service in $services; do
-        if [ $service = postgresql ]; then
+        if [ "$service" = postgresql ]; then
             service=postgresql@11-main
         fi
 
         optional=$(is_optional $service)
-        if [ $optional -eq 0 ]; then
+        if [ "$optional" -eq 0 ]; then
             systemctl stop $service 2> /dev/null
         else
             systemctl stop $service
