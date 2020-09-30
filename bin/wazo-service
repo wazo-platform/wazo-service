@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2018-2019 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2018-2020 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -138,7 +138,6 @@ is_enabled() {
 
 is_running() {
     local service=$1
-    local running=0
     systemctl is-active --quiet $service > /dev/null
     echo $?
 }
