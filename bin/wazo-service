@@ -139,14 +139,8 @@ is_enabled() {
 is_running() {
     local service=$1
     local running=0
-    if [ "$service" = "postgresql" ] ; then
-        systemctl status postgresql@11-main.service > /dev/null
-        running=$?
-    else
-        systemctl status $service > /dev/null
-        running=$?
-    fi
-    echo $running
+    systemctl status $service > /dev/null
+    echo $?
 }
 
 is_optional() {
