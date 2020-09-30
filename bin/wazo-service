@@ -139,7 +139,7 @@ is_enabled() {
 is_running() {
     local service=$1
     local running=0
-    systemctl status $service > /dev/null
+    systemctl is-active --quiet $service > /dev/null
     echo $?
 }
 
