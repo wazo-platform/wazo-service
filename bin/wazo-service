@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2018-2019 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2018-2020 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -58,7 +58,7 @@ fi
 
 reverse_list() {
     local service_list=$1
-    /bin/echo $service_list | tac -s' '
+    /bin/echo "$service_list" | tac -s' '
 }
 
 reversed_services=$(reverse_list "$services")
@@ -121,13 +121,13 @@ open_sip_port() {
 is_enabled() {
     local service=$1
     enabled=0
-    if [ $service = "asterisk" ]; then
+    if [ "$service" = "asterisk" ]; then
        test ! -f $wazo_disabled_file
        enabled=$?
     fi
     for srv in $wazo_services; do
-        if [ $srv != "asterisk" ]; then
-            if [ $srv = $service ]; then
+        if [ "$srv" != "asterisk" ]; then
+            if [ "$srv" = "$service" ]; then
                test ! -f $wazo_disabled_file
                enabled=$?
             fi
@@ -138,15 +138,8 @@ is_enabled() {
 
 is_running() {
     local service=$1
-    local running=0
-    if [ "$service" = "postgresql" ] ; then
-        systemctl status postgresql@11-main.service > /dev/null
-        running=$?
-    else
-        systemctl status $service > /dev/null
-        running=$?
-    fi
-    echo $running
+    systemctl is-active --quiet "$service" > /dev/null
+    echo $?
 }
 
 is_optional() {
@@ -158,48 +151,67 @@ is_optional() {
     fi
 }
 
+exists() {
+    local service=$1
+    systemctl cat "$service" > /dev/null 2> /dev/null
+    echo $?
+}
+
 start_services() {
     local services=$1
     for service in $services; do
-        if [ $service = postgresql ]; then
+        if [ "$service" = postgresql ]; then
             service=postgresql@11-main
         fi
         optional=$(is_optional $service)
+        exists=$(exists $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
-        if [ $enabled -eq 0 ] && [ $running -ne 0 ] ; then
-            echo -en "\tstarting $service ..."
-            if [ $optional -eq 0 ]; then
-                if systemctl start $service 2> /dev/null; then
-                    echo " OK"
-                else
-                    echo " ignored"
-                fi
-            else
-                if ! systemctl start $service; then
-                    echo " NOK"
-                    open_sip_port
-                    exit 1
-                fi
-                echo " OK"
-            fi
-        elif [ $enabled -ne 0 ]; then
-            echo -e "\t$service is disabled"
-        fi
+        print_start_service "$optional" "$exists" "$enabled" "$running"
     done
     start_monit
 }
+
+print_start_service() {
+    local optional=$1
+    local exists=$2
+    local enabled=$3
+    local running=$4
+
+    if [ "$enabled" -ne 0 ]; then
+        echo -e "\t$service is disabled"
+        return
+    fi
+    if [ "$running" -eq 0 ]; then
+        return
+    fi
+
+    echo -en "\tstarting $service ..."
+    if [ "$optional" -eq 0 ] && [ "$exists" -ne 0 ]; then
+        echo " ignored"
+        return
+    fi
+
+    if ! systemctl start "$service"; then
+        echo " NOK"
+        open_sip_port
+        exit 1
+    fi
+
+    echo " OK"
+}
+
 
 stop_services() {
     stop_monit
     local services=$1
     for service in $services; do
-        if [ $service = postgresql ]; then
+        if [ "$service" = postgresql ]; then
             service=postgresql@11-main
         fi
 
         optional=$(is_optional $service)
-        if [ $optional -eq 0 ]; then
+        if [ "$optional" -eq 0 ]; then
             systemctl stop $service 2> /dev/null
         else
             systemctl stop $service
