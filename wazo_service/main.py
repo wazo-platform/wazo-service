@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2017-2019 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2017-2021 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
@@ -7,7 +7,7 @@ import dbus
 import sys
 import traceback
 
-import xivo_db.bin.check_db
+import xivo_db.check_db
 
 ALL_RUNNING = 0
 SOME_STOPPED = 1
@@ -54,7 +54,7 @@ class PostgresService(Service):
 
 def status(service_group):
     try:
-        xivo_db.bin.check_db.main()
+        xivo_db.check_db.main()
     except Exception:
         traceback.print_exc()
 
