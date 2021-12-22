@@ -12,7 +12,7 @@ Depends: ${python3:Depends},
          dbus,
          monit,
          python3-dbus,
-         xivo-dbms (>= 19.07~20190429.122922.25c3757.deb9),
+         wazo-dbms,
          xivo-manage-db
 Conflicts: xivo-service
 Replaces: xivo-service
