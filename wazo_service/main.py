@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2017-2021 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2017-2022 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
@@ -22,7 +22,9 @@ class Service:
 
     def status(self):
         sysbus = dbus.SystemBus()
-        systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+        systemd1 = sysbus.get_object(
+            'org.freedesktop.systemd1', '/org/freedesktop/systemd1'
+        )
         manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
         try:
@@ -31,7 +33,9 @@ class Service:
             return 'unknown'
 
         unit = sysbus.get_object('org.freedesktop.systemd1', unit_path)
-        unit_properties = dbus.Interface(unit, dbus_interface='org.freedesktop.DBus.Properties')
+        unit_properties = dbus.Interface(
+            unit, dbus_interface='org.freedesktop.DBus.Properties'
+        )
         status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
         return self.translate_status(status)
 
@@ -45,7 +49,6 @@ class Service:
 
 
 class PostgresService(Service):
-
     def __init__(self):
         self.name = 'postgresql'
         self.unit_name = 'postgresql@11-main'
@@ -76,8 +79,12 @@ def status(service_group):
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('action', help='Available actions: status')
-    parser.add_argument('service_group_name', default='default', nargs='?',
-                        help='Available groups: all, default, xivo')
+    parser.add_argument(
+        'service_group_name',
+        default='default',
+        nargs='?',
+        help='Available groups: all, default, xivo',
+    )
     args = parser.parse_args()
 
     service_group = SERVICE_GROUPS[args.service_group_name]
@@ -109,7 +116,7 @@ SERVICE_GROUPS['default'] = [
     Service('wazo-sysconfd'),
     Service('wazo-confgend'),
     Service('wazo-confd'),
-    Service('wazo-auth')
+    Service('wazo-auth'),
 ] + SERVICE_GROUPS['xivo']
 SERVICE_GROUPS['all'] = [
     Service('rabbitmq-server'),
