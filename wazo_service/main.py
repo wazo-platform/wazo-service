@@ -9,18 +9,20 @@ import traceback
 
 import xivo_db.check_db
 
+from typing import Iterable
+
 ALL_RUNNING = 0
 SOME_STOPPED = 1
 SOME_FAILED = 2
 
 
 class Service:
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.name = name
         self.service_name = name
         self.unit_name = name
 
-    def status(self):
+    def status(self) -> str:
         sysbus = dbus.SystemBus()
         systemd1 = sysbus.get_object(
             'org.freedesktop.systemd1', '/org/freedesktop/systemd1'
@@ -40,7 +42,7 @@ class Service:
         return self.translate_status(status)
 
     @staticmethod
-    def translate_status(status):
+    def translate_status(status: str) -> str:
         if status == 'active':
             return 'running'
         if status == 'failed':
@@ -49,13 +51,13 @@ class Service:
 
 
 class PostgresService(Service):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = 'postgresql'
         self.unit_name = 'postgresql@11-main'
         self.service_name = 'postgresql'
 
 
-def status(service_group):
+def status(service_group: Iterable[Service]) -> int:
     try:
         xivo_db.check_db.main()
     except Exception:
@@ -76,7 +78,7 @@ def status(service_group):
     return ALL_RUNNING
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('action', help='Available actions: status')
     parser.add_argument(
