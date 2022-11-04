@@ -6,8 +6,8 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 action=$1
 services_filter=${2:-default}
 include_monit=1
-wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-dird wazo-phoned wazo-calld wazo-websocketd wazo-chatd"
-default_services="dahdi wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth $wazo_services"
+wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-phoned wazo-websocketd"
+default_services="dahdi wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
 all_services="rabbitmq-server consul postgresql nginx $default_services"
 monit_default="/etc/default/monit"
 wazo_disabled_file="/var/lib/wazo/disabled"
@@ -167,12 +167,12 @@ start_services() {
         exists=$(exists $service)
         enabled=$(is_enabled $service)
         running=$(is_running $service)
-        print_start_service "$optional" "$exists" "$enabled" "$running"
+        start_service "$optional" "$exists" "$enabled" "$running"
     done
     start_monit
 }
 
-print_start_service() {
+start_service() {
     local optional=$1
     local exists=$2
     local enabled=$3
