@@ -122,7 +122,6 @@ SERVICE_GROUPS['default'] = [
 ] + SERVICE_GROUPS['xivo']
 SERVICE_GROUPS['all'] = [
     Service('rabbitmq-server'),
-    Service('consul'),
     PostgresService(),
     Service('nginx'),
 ] + SERVICE_GROUPS['default']
