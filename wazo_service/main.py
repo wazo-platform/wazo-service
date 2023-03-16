@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2017-2023 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import argparse
 import dbus
@@ -17,10 +18,10 @@ SOME_FAILED = 2
 
 
 class Service:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, unit_name: str | None = None) -> None:
         self.name = name
         self.service_name = name
-        self.unit_name = name
+        self.unit_name = unit_name or name
 
     def status(self) -> str:
         sysbus = dbus.SystemBus()
@@ -52,9 +53,7 @@ class Service:
 
 class PostgresService(Service):
     def __init__(self) -> None:
-        self.name = 'postgresql'
-        self.unit_name = 'postgresql@11-main'
-        self.service_name = 'postgresql'
+        super().__init__('postgresql', unit_name='postgresql@13-main')
 
 
 def status(service_group: Iterable[Service]) -> int:
