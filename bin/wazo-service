@@ -4,7 +4,7 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 action=$1
-services_filter=${2:-default}
+service_filter=${2:-default}
 include_monit=1
 wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-phoned wazo-calld wazo-websocketd"
 default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
@@ -15,8 +15,8 @@ wazo_disabled_file="/var/lib/wazo/disabled"
 
 usage() {
     cat <<-EOF
-	usage : $0 action [services_filter]
-	availables actions :
+	usage : $0 action [service_filter]
+	available actions:
 	    status     : print status of all wazo services
 	    restart    : restart all wazo services
 	    stop       : stop all wazo services
@@ -24,35 +24,35 @@ usage() {
 	    enable     : enable all wazo services
 	    disable    : disable all wazo services
 
-	availables services_filter :
+	available service filters:
 	    wazo       : manage services only used on an active Wazo
 	    default    : wazo + messaging and configuration
 	    all        : default + web and database servers
 
-	impacted services ($services_filter) : $services
+	impacted services ($service_filter) : $services
 	EOF
 
     exit 0
 }
 
-if [ "$services_filter" = default ]; then
+if [ "$service_filter" = default ]; then
     services=$default_services
-elif [ "$services_filter" = all ]; then
+elif [ "$service_filter" = all ]; then
     services=$all_services
-elif [ "$services_filter" = wazo ]; then
+elif [ "$service_filter" = wazo ]; then
     services=$wazo_services
-elif [ "$services_filter" = "wazo-nomonit" ]; then
+elif [ "$service_filter" = "wazo-nomonit" ]; then
     services=$wazo_services
     include_monit=0
-elif [ "$services_filter" = xivo ]; then
+elif [ "$service_filter" = xivo ]; then
     echo 'Warning: xivo action is a deprecated alias to wazo: use wazo-service wazo' >&2
     services=$wazo_services
-elif [ "$services_filter" = "xivo-nomonit" ]; then
+elif [ "$service_filter" = "xivo-nomonit" ]; then
     echo 'Warning: xivo-nomonit action is a deprecated alias to wazo-nomonit: use wazo-service wazo-nomonit' >&2
     services=$wazo_services
     include_monit=0
 else
-    echo "Invalid service filter \"$services_filter\""
+    echo "Invalid service filter \"$service_filter\""
     usage
 fi
 
@@ -65,7 +65,7 @@ reverse_list() {
 reversed_services=$(reverse_list "$services")
 
 wazo_status() {
-    wazo-service-python status "$services_filter"
+    wazo-service-python status "$service_filter"
 }
 
 wazo_enable() {
