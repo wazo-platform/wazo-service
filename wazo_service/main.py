@@ -80,20 +80,16 @@ def status(service_group: Iterable[Service]) -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description='Manage Wazo Services')
-    parser.add_argument('action', help='Available actions: status')
+    parser.add_argument('action', choices=list(ACTIONS), help='Action to perform')
     parser.add_argument(
         'service_group_name',
         default='default',
         nargs='?',
         help='Filter by service group',
-        choices=list(SERVICE_GROUPS) + ['xivo'],
+        choices=list(SERVICE_GROUPS),
     )
     args = parser.parse_args()
-    group_name = args.service_group_name
-    if group_name == 'xivo':
-        print('Warning: xivo is a deprecated alias to wazo: use wazo instead')
-        group_name = 'wazo'
-    service_group = SERVICE_GROUPS[group_name]
+    service_group = SERVICE_GROUPS[args.service_group_name]
     status_code = ACTIONS[args.action](service_group)
 
     sys.exit(status_code)

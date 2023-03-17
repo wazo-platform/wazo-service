@@ -43,13 +43,16 @@ elif [ "$service_filter" = wazo ]; then
     services=$wazo_services
 elif [ "$service_filter" = "wazo-nomonit" ]; then
     services=$wazo_services
+    service_filter="wazo"
     include_monit=0
 elif [ "$service_filter" = xivo ]; then
     echo 'Warning: xivo action is a deprecated alias to wazo: use wazo-service wazo' >&2
+    service_filter="wazo"
     services=$wazo_services
 elif [ "$service_filter" = "xivo-nomonit" ]; then
     echo 'Warning: xivo-nomonit action is a deprecated alias to wazo-nomonit: use wazo-service wazo-nomonit' >&2
     services=$wazo_services
+    service_filter="wazo"
     include_monit=0
 else
     echo "Invalid service filter \"$service_filter\""
