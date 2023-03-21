@@ -30,7 +30,7 @@ class Service:
         manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
         try:
-            unit_path = manager.GetUnit('{}.service'.format(self.unit_name))
+            unit_path = manager.GetUnit(f'{self.unit_name}.service')
         except dbus.DBusException:
             return 'unknown'
 
@@ -38,8 +38,8 @@ class Service:
         unit_properties = dbus.Interface(
             unit, dbus_interface='org.freedesktop.DBus.Properties'
         )
-        status = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
-        return self.translate_status(status)
+        state = unit_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
+        return self.translate_status(state)
 
     @staticmethod
     def translate_status(status: str) -> str:
@@ -68,7 +68,7 @@ def status(service_group: Iterable[Service]) -> int:
 
     print('Checking services...')
     for name, status in zip(names, statuses):
-        print('\t{status}\t\t{name}'.format(status=status, name=name))
+        print(f'\t{status}\t\t{name}')
 
     if 'stopped' in statuses:
         return SOME_STOPPED
@@ -79,16 +79,16 @@ def status(service_group: Iterable[Service]) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('action', help='Available actions: status')
+    parser = argparse.ArgumentParser(description='Manage Wazo Services')
+    parser.add_argument('action', choices=list(ACTIONS), help='Action to perform')
     parser.add_argument(
         'service_group_name',
         default='default',
         nargs='?',
-        help='Available groups: all, default, xivo',
+        help='Filter by service group',
+        choices=list(SERVICE_GROUPS),
     )
     args = parser.parse_args()
-
     service_group = SERVICE_GROUPS[args.service_group_name]
     status_code = ACTIONS[args.action](service_group)
 
@@ -96,8 +96,7 @@ def main() -> None:
 
 
 ACTIONS = {'status': status}
-SERVICE_GROUPS = {}
-SERVICE_GROUPS['xivo'] = [
+WAZO_SERVICES = [
     Service('wazo-call-logd'),
     Service('wazo-dxtora'),
     Service('wazo-provd'),
@@ -111,19 +110,26 @@ SERVICE_GROUPS['xivo'] = [
     Service('wazo-websocketd'),
     Service('wazo-chatd'),
 ]
-SERVICE_GROUPS['default'] = [
+DEFAULT_SERVICES = [
     Service('wazo-plugind'),
     Service('wazo-webhookd'),
     Service('wazo-sysconfd'),
     Service('wazo-confgend'),
     Service('wazo-confd'),
     Service('wazo-auth'),
-] + SERVICE_GROUPS['xivo']
-SERVICE_GROUPS['all'] = [
+] + WAZO_SERVICES
+
+ALL_SERVICES = [
     Service('rabbitmq-server'),
     PostgresService(),
     Service('nginx'),
-] + SERVICE_GROUPS['default']
+] + DEFAULT_SERVICES
+
+SERVICE_GROUPS = {
+    'wazo': WAZO_SERVICES,
+    'default': DEFAULT_SERVICES,
+    'all': ALL_SERVICES,
+}
 
 
 if __name__ == '__main__':
