@@ -108,17 +108,17 @@ start_monit() {
 
 close_sip_port() {
     echo "Closing port 5060."
-    iptables -n --list | grep -q '^DROP.*5060'
+    nft -n list table filter | grep -q "^\s*udp dport 5060 counter packets 0 bytes 0 drop"
     if [ $? -eq 1 ]; then
-        iptables -I INPUT 1 -p udp --dport 5060 -j DROP
+        nft insert rule ip filter INPUT udp dport 5060 counter drop
     fi
 }
 
 open_sip_port() {
     echo "Opening port 5060."
-    iptables -n --list | grep -q '^DROP.*5060'
+    rule=$(nft -a -n list table filter | grep "^\s*udp dport 5060 counter packets 0 bytes 0 drop")
     if [ $? -eq 0 ]; then
-        iptables -D INPUT -p udp --dport 5060 -j DROP
+        nft delete rule filter INPUT handle "$(echo "${rule}" | grep -o '[0-9]*$')"
     fi
 }
 
