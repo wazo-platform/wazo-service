@@ -12,6 +12,7 @@ Depends: ${python3:Depends},
          dbus,
          monit,
          python3-dbus,
+         iptables,
          wazo-dbms,
          xivo-manage-db
 Conflicts: xivo-service
