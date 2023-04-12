@@ -156,7 +156,7 @@ start_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@11-main
+            service=postgresql@13-main
         fi
         exists=$(exists $service)
         enabled=$(is_enabled $service)
@@ -195,7 +195,7 @@ stop_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@11-main
+            service=postgresql@13-main
         fi
         systemctl stop $service
     done

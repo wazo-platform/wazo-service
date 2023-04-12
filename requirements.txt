@@ -1,2 +1,2 @@
 https://github.com/wazo-platform/xivo-manage-db/archive/master.zip
-dbus==1.2.8
+dbus-python==1.2.16
