@@ -9,7 +9,6 @@ include_monit=1
 wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-phoned wazo-calld wazo-websocketd"
 default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
 all_services="rabbitmq-server postgresql nginx $default_services"
-monit_default="/etc/default/monit"
 wazo_disabled_file="/var/lib/wazo/disabled"
 
 
@@ -84,25 +83,22 @@ wazo_disable() {
 }
 
 disable_monit() {
-    sed -i 's/START=yes/START=no/' $monit_default
-    # systemctl disable also updates sysv links via update-rc.d
     systemctl disable monit &> /dev/null
 }
 
 stop_monit() {
     if [ $include_monit -eq 1 ]; then
-        service monit stop > /dev/null
+        systemctl stop monit > /dev/null
     fi
 }
 
 enable_monit() {
-    sed -i 's/START=no/START=yes/' $monit_default
     systemctl enable monit &> /dev/null
 }
 
 start_monit() {
-    if [ $include_monit -eq 1 ]; then
-        service monit start > /dev/null
+    if [ $include_monit -eq 1 ] && [ ! -f $wazo_disabled_file ]; then
+        systemctl start monit > /dev/null
     fi
 }
 
