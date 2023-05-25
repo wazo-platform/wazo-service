@@ -10,7 +10,7 @@ import traceback
 
 import xivo_db.check_db
 
-from typing import Iterable
+from collections.abc import Iterable
 
 ALL_RUNNING = 0
 SOME_STOPPED = 1
