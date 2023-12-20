@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/ 
+Format: http://www.debian.org/doc/packaging-manuals/Copyright 1-2023 The Wazo Authors  (see the AUTHORS file)
 Upstream-Name: wazo-service
 Source: https://github.com/wazo-platform/wazo-service
 
