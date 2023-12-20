@@ -4,13 +4,12 @@
 from __future__ import annotations
 
 import argparse
-import dbus
 import sys
 import traceback
-
-import xivo_db.check_db
-
 from collections.abc import Iterable
+
+import dbus
+import xivo_db.check_db
 
 ALL_RUNNING = 0
 SOME_STOPPED = 1
