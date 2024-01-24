@@ -1,6 +1,6 @@
 Source: wazo-service
 Section: admin
-Priority: extra
+Priority: optional
 Maintainer: Wazo Maintainers <dev@wazo.community>
 Build-Depends: debhelper (>= 12), dh-python, python3-all, python3-setuptools
 Standards-Version: 3.9.6
@@ -15,8 +15,5 @@ Depends: ${python3:Depends},
          iptables,
          wazo-dbms,
          xivo-manage-db
-Conflicts: xivo-service
-Replaces: xivo-service
-Provides: xivo-service
 Description: manage Wazo services
  Command line utilities to manage Wazo services.
