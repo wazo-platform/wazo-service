@@ -231,11 +231,11 @@ if [ "$(basename "$0")" == 'xivo-service' ]; then
 fi
 
 case $action in
-    status|monitor)  wazo_status;;
+    status|monitor)       wazo_status;;
     force-reload|restart) wazo_restart;;
-    start)   wazo_start;;
-    stop)    wazo_stop;;
-    enable)  wazo_enable;;
-    disable) wazo_disable;;
-    *) usage;;
+    start)                wazo_start;;
+    stop)                 wazo_stop;;
+    enable)               wazo_enable;;
+    disable)              wazo_disable;;
+    *)                    usage;;
 esac
