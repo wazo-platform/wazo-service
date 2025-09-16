@@ -10,6 +10,7 @@ wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-log
 default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
 all_services="rabbitmq-server postgresql nginx $default_services"
 wazo_disabled_file="/var/lib/wazo/disabled"
+postgresql_service='postgresql@15-main'
 
 
 usage() {
@@ -152,7 +153,7 @@ start_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@15-main
+            service=${postgresql_service}
         fi
         exists=$(exists $service)
         enabled=$(is_enabled $service)
@@ -191,7 +192,7 @@ stop_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@15-main
+            service=${postgresql_service}
         fi
         systemctl stop $service
     done
