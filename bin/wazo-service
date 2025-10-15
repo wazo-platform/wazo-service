@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2018-2023 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2018-2025 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -10,6 +10,7 @@ wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-log
 default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
 all_services="rabbitmq-server postgresql nginx $default_services"
 wazo_disabled_file="/var/lib/wazo/disabled"
+postgresql_service='postgresql@15-main'
 
 
 usage() {
@@ -152,7 +153,7 @@ start_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@13-main
+            service=${postgresql_service}
         fi
         exists=$(exists $service)
         enabled=$(is_enabled $service)
@@ -191,7 +192,7 @@ stop_services() {
     local services=$1
     for service in $services; do
         if [ "$service" = postgresql ]; then
-            service=postgresql@13-main
+            service=${postgresql_service}
         fi
         systemctl stop $service
     done
@@ -231,11 +232,11 @@ if [ "$(basename "$0")" == 'xivo-service' ]; then
 fi
 
 case $action in
-    status|monitor)  wazo_status;;
+    status|monitor)       wazo_status;;
     force-reload|restart) wazo_restart;;
-    start)   wazo_start;;
-    stop)    wazo_stop;;
-    enable)  wazo_enable;;
-    disable) wazo_disable;;
-    *) usage;;
+    start)                wazo_start;;
+    stop)                 wazo_stop;;
+    enable)               wazo_enable;;
+    disable)              wazo_disable;;
+    *)                    usage;;
 esac
