@@ -1,13 +1,13 @@
 #!/bin/bash
-# Copyright 2018-2025 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2018-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 action=$1
 service_filter=${2:-default}
 include_monit=1
-wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-phoned wazo-calld wazo-websocketd"
-default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird wazo-chatd $wazo_services"
+wazo_services="wazo-dxtora wazo-provd wazo-agid asterisk wazo-amid wazo-call-logd wazo-agentd wazo-phoned wazo-calld wazo-websocketd wazo-chatd"
+default_services="wazo-plugind wazo-webhookd wazo-sysconfd wazo-confgend wazo-confd wazo-auth wazo-dird $wazo_services"
 all_services="rabbitmq-server postgresql nginx $default_services"
 wazo_disabled_file="/var/lib/wazo/disabled"
 postgresql_service='postgresql@15-main'
