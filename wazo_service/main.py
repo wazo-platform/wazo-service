@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2017-2025 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2017-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -102,7 +102,6 @@ WAZO_SERVICES = [
     Service('asterisk'),
     Service('wazo-amid'),
     Service('wazo-agentd'),
-    Service('wazo-dird'),
     Service('wazo-phoned'),
     Service('wazo-calld'),
     Service('wazo-websocketd'),
@@ -115,6 +114,7 @@ DEFAULT_SERVICES = [
     Service('wazo-confgend'),
     Service('wazo-confd'),
     Service('wazo-auth'),
+    Service('wazo-dird'),
 ] + WAZO_SERVICES
 
 ALL_SERVICES = [
